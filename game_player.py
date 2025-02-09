@@ -16,10 +16,10 @@ def play_game():
         while not valid_input:
             try:
                 row = int(input("Enter row (0 to {}): ".format(env.size - 1)))
-                column = int(input("Enter column (0 to {}):".format(env.size -1)))    
-            
+                column = int(input("Enter column (0 to {}):".format(env.size - 1)))
+
                 if 0 <= row < env.size and 0 <= column < env.size:
-                    if state[row, column] != -2: #Check if cell hasnt been revealed
+                    if env.revealed[row, column]: #Check if cell hasnt been revealed
                         print("This cell has already been revealed. Chose another one")
                     else:
                         valid_input = True
@@ -27,7 +27,7 @@ def play_game():
                     print(f"Invalid input! Please enter row and column between 0 and {env.size - 1}.")
             except ValueError:
                 print("Invalid input! Please enter integers for row and column")
-            
+
         action = (row, column)
         next_state, reward, done, _ = env.step(action)
 

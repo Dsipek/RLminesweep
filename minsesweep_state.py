@@ -15,20 +15,17 @@ class RunningState(MinesweeperStateProtocol):
         
         env.revealed[i ,j] = True
 
-        if env.board[i, j] == -1:
+        if env.board[i, j] == 9:
             env.done = True
             env.current_state = TerminalState()
-            return env.get_state(), -10, True, {}
+            return env.get_state(), -100, True, {}
         
-        reward = 1
-        
-        if np.sum(env.revealed) == env.size * env.size - env.n_mines:
+        if env.is_win():
             env.done = True
-            reward += 10
             env.current_state = TerminalState()
-            return env.get_state(), reward, True, {}
+            return env.get_state(), 1000, True, {}
         
-        return env.get_state(), reward, False, {}
+        return env.get_state(), 1, False, {}
 
 class TerminalState(MinesweeperStateProtocol):
     """
@@ -36,4 +33,3 @@ class TerminalState(MinesweeperStateProtocol):
     """
     def step(self, env, action: Tuple[int, int]) -> Tuple[np.ndarray, float, bool, dict]:
         return env.get_state(), 0, True, {}
-
