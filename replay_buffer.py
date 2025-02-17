@@ -1,9 +1,10 @@
 import random
 import numpy as np
+from config import MEM_SIZE, MEM_SIZE_MIN
 
 class ReplayBuffer:
-    def __init__(self, capacity):
-        self.capacity = capacity
+    def __init__(self):
+        self.capacity = MEM_SIZE
         self.memory = []
     
     def push(self, state, action, reward, next_state, done):

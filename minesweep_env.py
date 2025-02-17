@@ -9,7 +9,7 @@ class MinesweeperEnv:
     """
     Environment for following the state machine
     """
-    def __init__(self, size: int = 5, n_mines: int = 3):
+    def __init__(self, size: int = 9, n_mines: int = 8):
         self.size = size
         self.n_mines = n_mines
         self.reset()
@@ -66,17 +66,26 @@ class MinesweeperEnv:
         Processes an action by calling the current states step method 
         """
         row, col = action
+       #reward = -0.1  # Guess penalty
         if self.board[row, col] == 9:
-            reward = -10  # Smaller negative reward for hitting a mine
+            reward = -1  # Lose reward
             self.done = True
+        elif self.is_win():
+            reward = 1  # Win rewrd
+            self.done = True
+        elif self.has_adjacent_revealed_tile(row, col):
+            reward = 0.3
         else:
-            reward = 10  # Larger positive reward for revealing a safe cell
-            self.revealed[row, col] = True
-            if self.is_win():
-                reward = 1000  # Large positive reward for winning the game
-                self.done = True
+            reward = -0.3
 
-        return self.current_state.step(self, (row, col))
+        return self.current_state.step(self, action, reward)
+
+    def has_adjacent_revealed_tile(self, row, col):
+        for i in range(max(0, row - 1), min(self.size, row + 2)):
+            for j in range(max(0, col - 1), min(self.size, col + 2)):
+                if (i, j) != (row, col) and self.revealed[i, j]:
+                    return True
+        return False
     
     def is_win(self) -> bool:
         """
